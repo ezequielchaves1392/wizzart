@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title id="page-title">Wizzcart</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -28,7 +28,6 @@
         <div class="upper-layout">
             <div class="content-area">
 
-                <!-- 1. GALERÍA -->
                 <div id="gallery-screen" class="screen active">
                     <div class="panel-box">
                         <div class="panel-title">🏛️ Exposición y Tienda a la Calle (Láminas 3D)</div>
@@ -66,32 +65,20 @@
                     </div>
                 </div>
 
-                <!-- 1.5 SECCIÓN DEL ARTISTA -->
                 <div id="artist-screen" class="screen">
                     <div class="panel-box">
-                        <div class="panel-title">✍️ Configuración del Artista y Firma</div>
-                        <div style="font-size: 11px; color: #aaa; margin-bottom: 12px; text-align: center;">Define tu nombre y dibuja tu firma personal en el recuadro. Se guardará para aparecer en miniatura en el reverso de tus obras.</div>
+                        <div class="panel-title">✍️ Configuración del Artista</div>
+                        <div style="font-size: 11px; color: #aaa; margin-bottom: 12px; text-align: center;">Define tu nombre artístico. La firma en el reverso de tus obras se generará automáticamente en letra cursiva a partir de este nombre.</div>
                         
                         <div style="margin-bottom: 10px;">
                             <label style="font-size: 11px; color: #ccc;">Nombre del Artista:</label>
                             <input type="text" id="artist-name-input" value="Ese" style="width: 100%; background: #151522; color: #fff; border: 1px solid #444; border-radius: 4px; padding: 6px; box-sizing: border-box; margin-top: 3px;">
                         </div>
-                        
-                        <div style="margin-bottom: 10px; text-align: center;">
-                            <label style="font-size: 11px; color: #ccc; display: block; margin-bottom: 4px;">Pad de Firma (Dibuja aquí):</label>
-                            <div style="display: inline-block; background: #fff; border: 2px solid #555; border-radius: 4px; padding: 2px;">
-                                <canvas id="signaturePadCanvas" width="200" height="90" style="cursor: crosshair; display: block;"></canvas>
-                            </div>
-                            <div style="margin-top: 4px;">
-                                <button class="btn-nav" style="background: #c0392b; font-size: 10px; padding: 3px 8px;" onclick="clearSignaturePad()">Limpiar Firma</button>
-                            </div>
-                        </div>
 
-                        <button class="btn-nav" style="background: #2e8b57; width: 100%; padding: 8px; margin-top: 5px;" onclick="saveArtistProfile()">Guardar Perfil y Firma</button>
+                        <button class="btn-nav" style="background: #2e8b57; width: 100%; padding: 8px; margin-top: 5px;" onclick="saveArtistProfile()">Guardar Nombre de Artista</button>
                     </div>
                 </div>
 
-                <!-- 2. TALLER DE PINTURA -->
                 <div id="workshop-screen" class="screen">
                     <div class="panel-box">
                         <div class="panel-title">🎨 Taller de Creación</div>
@@ -107,7 +94,6 @@
                     </div>
                 </div>
 
-                <!-- 3. GALPÓN DE OBRAS -->
                 <div id="shed-screen" class="screen">
                     <div class="panel-box">
                         <div class="panel-title">🏗️ Galpón de Obras</div>
@@ -118,175 +104,126 @@
                     </div>
                 </div>
 
-                <!-- MODAL NUEVA OBRA -->
-                <div id="new-painting-modal" class="panel-box" style="display:none; border: 2px solid #ffd700;">
-                    <div class="panel-title">📐 Configurar Nueva Obra (Única en Nombre/Autor)</div>
-                    <div style="margin-bottom: 8px;">
-                        <label style="font-size: 11px; color: #ccc;">Nombre de la Obra:</label>
-                        <input type="text" id="input-painting-name" value="Paisaje tal" style="width: 100%; background: #151522; color: #fff; border: 1px solid #444; border-radius: 4px; padding: 5px; box-sizing: border-box; margin-top: 2px;">
-                    </div>
-                    <div style="margin-bottom: 8px;">
-                        <label style="font-size: 11px; color: #ccc;">Autor:</label>
-                        <input type="text" id="input-painting-author" value="Ese" style="width: 100%; background: #151522; color: #fff; border: 1px solid #444; border-radius: 4px; padding: 5px; box-sizing: border-box; margin-top: 2px;">
-                    </div>
-                    <div style="margin-bottom: 10px;">
-                        <label style="font-size: 11px; color: #ccc;">Breve Descripción (Leyenda):</label>
-                        <input type="text" id="input-painting-desc" value="Una obra única e inspiradora..." style="width: 100%; background: #151522; color: #fff; border: 1px solid #444; border-radius: 4px; padding: 5px; box-sizing: border-box; margin-top: 2px;">
-                    </div>
-                    
-                    <div class="store-row">
-                        <div>Lienzo Chico (300x225) <br><span style="font-size:11px; color:#2ecc71;" id="count-chico">¡Infinito! (Gratis)</span></div>
-                        <button class="btn-nav" onclick="startNewPainting(300, 225, 'chico')">Usar Chico</button>
-                    </div>
-                    <div class="store-row">
-                        <div>Lienzo Mediano (450x338) <br><span style="font-size:11px; color:#2ecc71;" id="count-mediano">Disponibles: 0</span></div>
-                        <button class="btn-nav" onclick="startNewPainting(450, 338, 'mediano')">Usar Mediano</button>
-                    </div>
-                    <div class="store-row">
-                        <div>Lienzo Grande (600x450) <br><span style="font-size:11px; color:#2ecc71;" id="count-grande">Disponibles: 0</span></div>
-                        <button class="btn-nav" onclick="startNewPainting(600, 450, 'grande')">Usar Grande</button>
-                    </div>
-                    <button class="btn-nav" style="background: #555; width: 100%; margin-top: 5px;" onclick="closeNewPaintingModal()">Cancelar</button>
-                </div>
-
-                <!-- PANTALLA DE LIENZO ACTIVO -->
-                <div id="paint-canvas-screen" class="screen">
-                    <div class="title-box" id="paint-title-label">Lienzo en Curso</div>
-                    <div class="toolbar">
-                        <button class="tool-btn active" onclick="setTool('pincel')">🖌️ Pincel</button>
-                        <button class="tool-btn" onclick="setTool('difuminar')">💨 Difuminar</button>
-                        <button class="tool-btn" onclick="setTool('lapiz')">✏️ Lápiz</button>
-                    </div>
-                    <div class="palette" id="dynamic-palette"></div>
-                    
-                    <div class="workshop-scroll-area" id="workshop-scroll-area">
-                        <div class="canvas-container-mobile" id="canvas-viewport-wrapper">
-                            <canvas id="paintCanvas"></canvas>
-                        </div>
-                    </div>
-
-                    <div class="actions-footer">
-                        <button class="btn-action btn-discard" onclick="discardCanvasPermanently()">🗑️ Eliminar</button>
-                        <button class="btn-action btn-finish" onclick="finishAndSendToShed()">✨ Guardar</button>
-                    </div>
-                </div>
-
-                <!-- INVENTARIO -->
                 <div id="inventory-screen" class="screen">
                     <div class="panel-box">
-                        <div class="panel-title">🎒 Inventario</div>
-                        <div style="font-size: 11px; color: #aaa; text-align: center; margin-bottom: 5px;">Clic en un ítem para mover, mezclar o descartar.</div>
-                        <div style="font-size: 11px; color: #2ecc71; text-align: center;" id="inv-status-action">Espacio libre seleccionado.</div>
-                        
-                        <div class="wow-inventory-grid" id="wow-inventory-container"></div>
+                        <div class="panel-title">🎒 Inventario General</div>
+                        <div style="font-size: 11px; color: #aaa; margin-bottom: 10px;">Tus tarros de pintura, herramientas y suministros.</div>
+                        <div class="wow-inventory-grid" id="wow-inventory-grid"></div>
                     </div>
                 </div>
 
-                <!-- TIENDA -->
                 <div id="supply-screen" class="screen">
                     <div class="panel-box">
-                        <div class="panel-title">🛒 Tienda</div>
-                        
-                        <div class="sub-navs">
-                            <button class="sub-tab-btn active" onclick="switchShopTab('lienzos', this)">📦 Lienzos</button>
-                            <button class="sub-tab-btn" onclick="switchShopTab('marcos', this)">🖼️ Marcos</button>
-                            <button class="sub-tab-btn" onclick="switchShopTab('pinturas', this)">🎨 Pinturas</button>
+                        <div class="panel-title">🛒 Tienda de Suministros</div>
+                        <div style="display: flex; gap: 6px; margin-bottom: 12px; justify-content: center; flex-wrap: wrap;">
+                            <button class="sub-tab-btn active" onclick="switchShopTab('colors', this)">🎨 Colores</button>
+                            <button class="sub-tab-btn" onclick="switchShopTab('tools', this)">🛠️ Herramientas</button>
+                            <button class="sub-tab-btn" onclick="switchShopTab('expansion', this)">📦 Expansiones</button>
                         </div>
 
-                        <div id="shop-lienzos" class="shop-category-section active">
-                            <div class="store-row">
-                                <div>Lienzo Chico (Infinito / Gratis)</div>
-                                <span style="font-size: 11px; color: #2ecc71; font-weight: bold;">Incluido</span>
-                            </div>
-                            <div class="store-row">
-                                <div>Lienzo Mediano (💵 50) - 450x338</div>
-                                <button class="btn-nav" onclick="buyItem('lienzo', 'mediano', 50)">Comprar</button>
-                            </div>
-                            <div class="store-row">
-                                <div>Lienzo Grande (💵 100) - 600x450</div>
-                                <button class="btn-nav" onclick="buyItem('lienzo', 'grande', 100)">Comprar</button>
-                            </div>
+                        <div id="shop-colors" class="shop-category-section active">
+                            <div class="shop-grid" id="shop-colors-grid"></div>
                         </div>
 
-                        <div id="shop-marcos" class="shop-category-section">
-                            <div class="store-row">
-                                <div>Marco de Madera Simple (💵 30)</div>
-                                <button class="btn-nav" onclick="buyItem('marco', 'madera', 30)">Comprar</button>
-                            </div>
-                            <div class="store-row">
-                                <div>Marco de Roble Tallado (💵 75)</div>
-                                <button class="btn-nav" onclick="buyItem('marco', 'roble', 75)">Comprar</button>
-                            </div>
-                            <div class="store-row">
-                                <div>Marco Dorado de Lujo (💵 150)</div>
-                                <button class="btn-nav" onclick="buyItem('marco', 'dorado', 150)">Comprar</button>
-                            </div>
+                        <div id="shop-tools" class="shop-category-section">
+                            <div class="shop-grid" id="shop-tools-grid"></div>
                         </div>
 
-                        <div id="shop-pinturas" class="shop-category-section">
-                            <div class="store-row" style="display: flex; align-items: center; justify-content: space-between;">
-                                <div style="display: flex; align-items: center; gap: 8px;">
-                                    <strong>Frasquito Chico (1L) - (💵 20)</strong>
-                                    <input type="color" id="picker-chico" value="#e74c3c" style="cursor:pointer; border:none; width:25px; height:20px; background:none;">
-                                </div>
-                                <button class="btn-nav" onclick="buyPaintCan('chico', 20, 1)">Comprar</button>
-                            </div>
-                            <div class="store-row" style="display: flex; align-items: center; justify-content: space-between;">
-                                <div style="display: flex; align-items: center; gap: 8px;">
-                                    <strong>Frasquito Mediano (2L) - (💵 35)</strong>
-                                    <input type="color" id="picker-mediano" value="#3498db" style="cursor:pointer; border:none; width:25px; height:20px; background:none;">
-                                </div>
-                                <button class="btn-nav" onclick="buyPaintCan('mediano', 35, 2)">Comprar</button>
-                            </div>
-                            <div class="store-row" style="display: flex; align-items: center; justify-content: space-between;">
-                                <div style="display: flex; align-items: center; gap: 8px;">
-                                    <strong>Frasco Grande (5L) - (💵 60)</strong>
-                                    <input type="color" id="picker-grande" value="#f1c40f" style="cursor:pointer; border:none; width:25px; height:20px; background:none;">
-                                </div>
-                                <button class="btn-nav" onclick="buyPaintCan('grande', 60, 5)">Comprar</button>
-                            </div>
+                        <div id="shop-expansion" class="shop-category-section">
+                            <div class="shop-grid" id="shop-expansion-grid"></div>
                         </div>
-
                     </div>
                 </div>
 
             </div>
 
-            <!-- SIDEBAR DE OFERTAS -->
-            <div class="sidebar-area">
-                <div class="panel-box" style="margin-bottom:0; height: 100%;">
-                    <div class="panel-title">🏷️ Ofertas</div>
-                    <div id="offers-container" style="font-size: 11px; color: #aaa; text-align: center; margin-top: 10px;">
-                        No hay ofertas activas.
+            <div class="sidebar">
+                <div class="panel-box" style="margin-bottom: 10px;">
+                    <div class="panel-title">💬 Ofertas de Visitantes</div>
+                    <div id="offers-container" style="font-size: 11px; color: #bbb;">No hay ofertas activas.</div>
+                </div>
+                <div class="panel-box" style="flex: 1; display: flex; flex-direction: column;">
+                    <div class="panel-title">📜 Registro de Eventos</div>
+                    <div id="event-log" class="event-log">
+                        <div>[08:00] Bienvenido a Wizzcart. Configura tu artista y abre la galería.</div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- REGISTRO DE EVENTOS -->
-        <div class="event-log-container">
-            <div class="panel-box" style="margin-bottom: 0;">
-                <div class="panel-title" style="text-align: left; margin-bottom: 6px;">📜 Registro</div>
-                <div class="event-log" id="event-log">
-                    <div>[08:00] ¡Bienvenido a Wizzcart, Ese!</div>
+    <div id="paint-canvas-screen" class="screen">
+        <header style="margin-bottom: 5px;">
+            <div class="stats-container">
+                <button class="btn-nav" onclick="requestSwitchScreen('workshop-screen')" style="background: #c0392b;">← Salir al Taller</button>
+                <div class="stat-item" id="canvas-title-display" style="font-weight: bold; color: #ffd700;">Obra</div>
+            </div>
+            <div class="nav-buttons">
+                <button class="btn-nav" onclick="undoCanvas()" title="Deshacer">↩️</button>
+                <button class="btn-nav" onclick="redoCanvas()" title="Rehacer">↪️</button>
+                <button class="btn-nav" onclick="zoomWorkshopCanvas(1.2)" title="Acercar">➕</button>
+                <button class="btn-nav" onclick="zoomWorkshopCanvas(0.8)" title="Alejar">➖</button>
+                <button class="btn-nav" onclick="resetWorkshopCanvasView()" title="Restablecer Vista">🎯</button>
+            </div>
+        </header>
+
+        <div class="workshop-layout">
+            <div class="canvas-viewport" id="canvas-viewport">
+                <div class="canvas-container-mobile" id="canvas-container-mobile">
+                    <canvas id="paintCanvas"></canvas>
+                </div>
+            </div>
+
+            <div class="workshop-controls-panel">
+                <div class="workshop-tools-bar">
+                    <button class="tool-btn active" onclick="setTool('pincel')">🖌️ Pincel</button>
+                    <button class="tool-btn" onclick="setTool('espatula')">🧱 Espátula</button>
+                    <button class="tool-btn" onclick="setTool('rodillo')">🟩 Rodillo</button>
+                    <button class="tool-btn" onclick="setTool('borrador')">🧽 Borrador</button>
+                </div>
+
+                <div class="workshop-palette-bar" id="workshop-palette-bar"></div>
+
+                <div class="actions-footer">
+                    <button class="btn-action btn-discard" onclick="discardCanvasPermanently()">🗑️ Descartar</button>
+                    <button class="btn-action btn-finish" onclick="finishAndSendToShed()">💾 Guardar en Galpón</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- TOOLTIP FLOTANTE -->
-    <div id="inv-tooltip" class="inv-tooltip"></div>
+    <div id="new-painting-modal" class="custom-modal-overlay" style="display: none;">
+        <div class="modal-content" style="position: relative;">
+            <button onclick="closeNewPaintingModal()" style="position: absolute; top: 10px; right: 12px; background: none; border: none; color: #aaa; font-size: 16px; cursor: pointer; font-weight: bold;">✕</button>
+            <div class="panel-title" style="margin-top:0;">📐 Configurar Nueva Obra</div>
+            <div style="font-size: 11px; color: #aaa; margin-bottom: 10px;">Define el título, la leyenda y el tamaño del lienzo.</div>
+            
+            <div style="margin-bottom: 8px; text-align: left;">
+                <label style="font-size: 11px; color: #ccc;">Título de la Obra:</label>
+                <input type="text" id="input-painting-name" value="Paisaje Cósmico" style="width: 100%; background: #151522; color: #fff; border: 1px solid #444; border-radius: 4px; padding: 5px; box-sizing: border-box; margin-top: 2px;">
+            </div>
+            
+            <div style="margin-bottom: 12px; text-align: left;">
+                <label style="font-size: 11px; color: #ccc;">Breve Descripción (Leyenda):</label>
+                <input type="text" id="input-painting-desc" value="Una obra única e inspiradora..." style="width: 100%; background: #151522; color: #fff; border: 1px solid #444; border-radius: 4px; padding: 5px; box-sizing: border-box; margin-top: 2px;">
+            </div>
 
-    <!-- MODAL DE ACCIONES PARA OBJETOS DEL INVENTARIO -->
-    <div id="item-action-modal">
-        <div class="modal-content">
-            <h3 id="item-modal-title" style="color: #ffd700; margin-top:0;">Gestionar Objeto</h3>
-            <div id="item-modal-actions" style="display: flex; flex-direction: column; gap: 8px; margin-top: 15px;"></div>
-            <button class="btn-nav" style="background: #555; width: 100%; margin-top: 10px;" onclick="closeItemActionModal()">Cancelar</button>
+            <div style="margin-bottom: 12px; text-align: left;">
+                <label style="font-size: 11px; color: #ccc;">Tamaño del Lienzo:</label>
+                <select id="input-painting-size" style="width: 100%; background: #151522; color: #fff; border: 1px solid #444; border-radius: 4px; padding: 5px; box-sizing: border-box; margin-top: 2px;">
+                    <option value="chico">Chico (300 x 200)</option>
+                    <option value="mediano">Mediano (450 x 300)</option>
+                    <option value="grande">Grande (600 x 400)</option>
+                </select>
+            </div>
+
+            <div style="display: flex; gap: 8px; justify-content: center; margin-top: 15px;">
+                <button class="btn-nav" style="background: #2e8b57; flex: 1;" onclick="startNewCanvasFromModal()">Crear y Pintar</button>
+                <button class="btn-nav" style="background: #7f8c8d; flex: 1;" onclick="closeNewPaintingModal()">Cancelar</button>
+            </div>
         </div>
     </div>
 
-    <!-- MODAL DE EVALUACIÓN DE CLIENTES -->
     <div id="eval-modal" class="custom-modal-overlay" style="display: none;">
         <div class="modal-content" style="position: relative;">
             <button onclick="closeEvalModal()" style="position: absolute; top: 10px; right: 12px; background: none; border: none; color: #aaa; font-size: 16px; cursor: pointer; font-weight: bold;">✕</button>
@@ -295,12 +232,19 @@
             <p id="modal-desc" style="font-size: 11px; color: #ddd; background: #151522; padding: 8px; border-radius: 4px; text-align: left;"></p>
             <div style="font-size: 12px; color: #f1c40f; margin: 6px 0;" id="modal-score">⭐ Calificación</div>
             
-            <div style="font-size: 14px; font-weight: bold; color: #e74c3c; background: #2a1a1a; padding: 5px; border-radius: 4px; margin: 8px 0;">
-                ⏰ Tiempo: <span id="modal-timer">35</span>s
-            </div>
-            
-            <div id="modal-price" style="font-size: 13px; font-weight: bold; color: #2ecc71; margin-bottom: 10px;">Propuesta</div>
-            <div id="modal-buttons-container" style="display: flex; gap: 8px; justify-content: center;"></div>
+            <div style="font-size: 14px; font-weight: bold; color: #e74c3c; background: #2a1a1a; padding: 5px; border-radius: 4px; margin: 8px 0;" id="modal-price">Precio</div>
+            <div style="font-size: 11px; color: #aaa; margin-bottom: 10px;">⏳ Tiempo restante para decidir: <span id="modal-timer" style="color: #f1c40f; font-weight: bold;">35</span>s</div>
+
+            <div style="display: flex; gap: 8px; justify-content: center;" id="modal-buttons-container"></div>
+        </div>
+    </div>
+
+    <div id="tacho-modal" class="custom-modal-overlay" style="display: none;">
+        <div class="modal-content" style="position: relative;">
+            <button onclick="closeTachoModal()" style="position: absolute; top: 10px; right: 12px; background: none; border: none; color: #aaa; font-size: 16px; cursor: pointer; font-weight: bold;">✕</button>
+            <div id="tacho-modal-title" style="font-size: 14px; font-weight: bold; color: #ffd700; margin-bottom: 8px;">Tarro de Pintura</div>
+            <div id="tacho-modal-body" style="font-size: 11px; color: #ddd; margin-bottom: 12px; text-align: left;"></div>
+            <div id="tacho-modal-buttons" style="display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;"></div>
         </div>
     </div>
 
