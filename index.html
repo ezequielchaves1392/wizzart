@@ -1,0 +1,1629 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title id="page-title">Art Tycoon Master</title>
+    <style>
+        body {
+            background-color: #121218;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            padding: 10px;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 950px;
+            background: #1e1e2f;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-sizing: border-box;
+            align-items: center;
+            margin-bottom: 15px;
+            border: 1px solid #33334d;
+        }
+        .stats-container {
+            display: flex;
+            gap: 10px;
+            font-size: 12px;
+            align-items: center;
+        }
+        .stat-item {
+            background: #2a2a40;
+            padding: 5px 8px;
+            border-radius: 4px;
+        }
+        .btn-nav {
+            background: #4e4ee1;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-nav:hover { background: #6565f1; }
+        
+        .main-layout {
+            display: flex;
+            gap: 15px;
+            width: 100%;
+            max-width: 950px;
+            flex-direction: column;
+        }
+        .upper-layout {
+            display: flex;
+            gap: 15px;
+            width: 100%;
+        }
+        .content-area {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .screen {
+            display: none;
+            width: 100%;
+            flex-direction: column;
+        }
+        .screen.active { display: flex; }
+
+        .panel-box {
+            background: #1e1e2f;
+            border: 1px solid #33334d;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+        .panel-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .event-log-container {
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .event-log {
+            background: #151522;
+            border: 1px solid #333;
+            border-radius: 6px;
+            height: 140px;
+            overflow-y: auto;
+            padding: 10px;
+            font-size: 12px;
+            color: #b8b8d0;
+            display: flex;
+            flex-direction: column;
+        }
+        .event-log div { margin-bottom: 6px; border-bottom: 1px solid #222; padding-bottom: 3px; }
+
+        .exhibition-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .painting-slot {
+            background: #232336;
+            border: 2px dashed #444;
+            border-radius: 6px;
+            padding: 10px;
+            text-align: center;
+            position: relative;
+        }
+
+        /* CATÁLOGO / CARRUSEL CON FADE */
+        .catalog-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #151522;
+            border: 1px solid #3d3d6b;
+            border-radius: 8px;
+            padding: 15px;
+            position: relative;
+        }
+        .catalog-screen-view {
+            opacity: 1;
+            transition: opacity 0.4s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+        .catalog-screen-view.fade-out {
+            opacity: 0;
+        }
+        .catalog-painting-frame {
+            max-width: 100%;
+            max-height: 280px;
+            border: 4px solid #333;
+            border-radius: 4px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            background: #fff;
+            margin: 10px 0;
+            object-fit: contain;
+        }
+        .catalog-nav-controls {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .shed-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+        .shed-item-card {
+            background: #232336;
+            border: 1px solid #3d3d6b;
+            padding: 10px 12px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+        }
+
+        .offer-card {
+            background: #252538;
+            border: 1px solid #4a4a75;
+            padding: 8px;
+            border-radius: 5px;
+            margin-bottom: 8px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .offer-card:hover { border-color: #2ecc71; }
+
+        .sub-navs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #33334d;
+            padding-bottom: 8px;
+        }
+        .sub-tab-btn {
+            background: #2a2a40;
+            color: #aaa;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .sub-tab-btn.active {
+            background: #4e4ee1;
+            color: white;
+        }
+        .shop-category-section { display: none; }
+        .shop-category-section.active { display: block; }
+
+        .store-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #232336;
+            padding: 10px 12px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            border: 1px solid #3d3d6b;
+            font-size: 13px;
+        }
+
+        .wow-inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 36px);
+            grid-template-rows: repeat(10, 36px);
+            gap: 4px;
+            background: #151522;
+            padding: 10px;
+            border: 2px solid #33334d;
+            border-radius: 6px;
+            justify-content: center;
+            margin: 10px 0;
+        }
+        .inv-slot {
+            width: 36px;
+            height: 36px;
+            background: #232336;
+            border: 1px solid #3d3d6b;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .inv-slot:hover { border-color: #ffd700; }
+        .inv-slot.selected { border-color: #2ecc71; background: #223322; }
+        .inv-badge {
+            position: absolute;
+            bottom: 1px;
+            right: 2px;
+            font-size: 7px;
+            font-weight: bold;
+            color: #fff;
+            background: rgba(0,0,0,0.8);
+            padding: 0 2px;
+            border-radius: 2px;
+        }
+
+        .inv-tooltip {
+            position: absolute;
+            background: rgba(20, 20, 35, 0.95);
+            border: 1px solid #ffd700;
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            pointer-events: none;
+            z-index: 50;
+            display: none;
+            white-space: nowrap;
+        }
+
+        .paint-bottle {
+            width: 20px;
+            height: 28px;
+            background: #fdfdfd;
+            border: 1px solid #bbb;
+            border-radius: 3px 3px 5px 5px;
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+        .paint-bottle-cap {
+            width: 12px;
+            height: 6px;
+            background: #555;
+            position: absolute;
+            top: -6px;
+            left: 3px;
+            border-radius: 2px 2px 0 0;
+            border: 1px solid #333;
+            border-bottom: none;
+        }
+        .paint-bottle-label {
+            position: absolute;
+            top: 7px;
+            left: 1px;
+            right: 1px;
+            height: 12px;
+            background: #fff;
+            border-top: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6px;
+            font-weight: bold;
+            color: #c0392b;
+        }
+        .paint-bottle-liquid {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .title-box {
+            background: #1e1e2f;
+            padding: 8px 20px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            border: 1px solid #33334d;
+            text-align: center;
+        }
+        .toolbar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+            background: #1e1e2f;
+            padding: 8px 15px;
+            border-radius: 6px;
+            border: 1px solid #33334d;
+        }
+        .tool-btn {
+            background: #2a2a40;
+            color: white;
+            border: 1px solid #444;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .tool-btn.active { border-color: #ffd700; background: #3b3b5c; }
+        .palette { display: flex; gap: 12px; margin-bottom: 10px; align-items: center; flex-wrap: wrap; }
+        
+        .workshop-bottle-wrapper {
+            text-align: center;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 6px;
+            border: 2px solid transparent;
+        }
+        .workshop-bottle-wrapper.active-color {
+            border-color: #ffd700;
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .canvas-container {
+            position: relative;
+            background: white;
+            border: 4px solid #333;
+            border-radius: 4px;
+            overflow: hidden;
+            cursor: crosshair; 
+            display: inline-block;
+        }
+        canvas { display: block; }
+        
+        .actions-footer {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .btn-action {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .btn-discard { background: #c0392b; color: white; }
+        .btn-finish { background: #2e8b57; color: white; }
+
+        #tacho-modal, #eval-modal, #mix-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        .modal-content {
+            background: #1e1e2f;
+            padding: 25px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #555;
+            max-width: 380px;
+            width: 90%;
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="stats-container">
+            <div class="stat-item">💵 <span id="gold-val">350</span></div>
+            <div class="stat-item">⭐ Reputación: <span id="reputation-val">100</span>%</div>
+            <div class="stat-item">🎒 Mochila (10x10)</div>
+        </div>
+        <div>
+            <button class="btn-nav" onclick="requestSwitchScreen('gallery-screen')">🏛️ Tienda</button>
+            <button class="btn-nav" onclick="requestSwitchScreen('workshop-screen')">🎨 Taller</button>
+            <button class="btn-nav" onclick="requestSwitchScreen('shed-screen')">🏗️ Galpón</button>
+            <button class="btn-nav" onclick="requestSwitchScreen('inventory-screen')">🎒 Mochila</button>
+            <button class="btn-nav" onclick="requestSwitchScreen('supply-screen')">🛒 Suministros</button>
+        </div>
+    </header>
+
+    <div class="main-layout">
+        <div class="upper-layout">
+            <div class="content-area">
+
+                <!-- 1. TIENDA / GALERÍA -->
+                <div id="gallery-screen" class="screen active">
+                    <div class="panel-box">
+                        <div class="panel-title">🏛️ Exposición y Tienda a la Calle</div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 12px; align-items: center;">
+                            <button class="btn-nav" id="store-toggle-btn" onclick="toggleStore()" style="background: #d93838;">Tienda Cerrada</button>
+                            <span style="font-size: 11px; color: #888;" id="store-status-desc">Cerrada: No entran visitantes</span>
+                        </div>
+
+                        <!-- Selector de vista: Cuadrícula vs Catálogo -->
+                        <div style="display: flex; gap: 8px; margin-bottom: 12px; justify-content: center;">
+                            <button class="sub-tab-btn active" id="view-mode-grid" onclick="setGalleryViewMode('grid')">🔲 Vista Cuadrícula</button>
+                            <button class="sub-tab-btn" id="view-mode-catalog" onclick="setGalleryViewMode('catalog')">📖 Vista Catálogo (Fade)</button>
+                        </div>
+                        
+                        <!-- Contenedor Cuadrícula -->
+                        <div class="exhibition-grid" id="exhibition-slots-container"></div>
+
+                        <!-- Contenedor Catálogo con Fade -->
+                        <div id="exhibition-catalog-container" style="display: none;">
+                            <div class="catalog-container">
+                                <div class="catalog-screen-view" id="catalog-view-content">
+                                    <div id="catalog-title" style="font-size: 16px; font-weight: bold; color: #ffd700; margin-bottom: 4px;">Título</div>
+                                    <div id="catalog-author" style="font-size: 12px; color: #aaa; margin-bottom: 8px;">by Artista</div>
+                                    <img id="catalog-img" class="catalog-painting-frame" src="" alt="Obra">
+                                    <div id="catalog-price" style="font-size: 14px; font-weight: bold; color: #2ecc71; margin-bottom: 4px;">Precio: 💵 0</div>
+                                    <div id="catalog-visitor-state" style="font-size: 11px; color: #888;">Estado</div>
+                                </div>
+                                <div class="catalog-nav-controls">
+                                    <button class="btn-nav" onclick="changeCatalogSlide(-1)">◀ Anterior</button>
+                                    <span id="catalog-counter" style="font-size: 12px; color: #ccc;">0 / 0</span>
+                                    <button class="btn-nav" onclick="changeCatalogSlide(1)">Siguiente ▶</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- 2. TALLER DE PINTURA -->
+                <div id="workshop-screen" class="screen">
+                    <div class="panel-box">
+                        <div class="panel-title">🎨 Taller de Creación</div>
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <div style="background: #232336; padding: 12px; border-radius: 6px; border: 1px solid #3d3d6b; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <strong>Crear Nueva Obra</strong><br>
+                                    <span style="font-size: 11px; color: #aaa;">Inicia un lienzo limpio desde cero</span>
+                                </div>
+                                <button class="btn-nav" onclick="openNewPaintingModal()">Iniciar Nueva</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. GALPÓN DE OBRAS -->
+                <div id="shed-screen" class="screen">
+                    <div class="panel-box">
+                        <div class="panel-title">🏗️ Galpón de Obras Terminadas</div>
+                        <div style="font-size: 12px; color: #aaa; margin-bottom: 10px;">Edita tus obras, cambia su nombre, configura su precio o mándalas a exposición.</div>
+                        <div class="shed-grid" id="shed-container">
+                            <div style="color: #777; font-size: 13px; text-align: center; padding: 15px;">El galpón está vacío. ¡Termina una obra en el taller para verla aquí!</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MODAL NUEVA OBRA -->
+                <div id="new-painting-modal" class="panel-box" style="display:none; border: 2px solid #ffd700;">
+                    <div class="panel-title">📐 Configurar Nueva Obra</div>
+                    <div style="margin-bottom: 10px;">
+                        <label style="font-size: 12px; color: #ccc;">Nombre de la Obra:</label>
+                        <input type="text" id="input-painting-name" value="Paisaje tal" style="width: 100%; background: #151522; color: #fff; border: 1px solid #444; border-radius: 4px; padding: 6px; box-sizing: border-box; margin-top: 4px;">
+                    </div>
+                    
+                    <div class="store-row">
+                        <div>Lienzo Chico (300x225) <br><span style="font-size:11px; color:#2ecc71;" id="count-chico">Disponibles: 0</span></div>
+                        <button class="btn-nav" onclick="startNewPainting(300, 225, 'chico')">Usar Chico</button>
+                    </div>
+                    <div class="store-row">
+                        <div>Lienzo Mediano (450x338) <br><span style="font-size:11px; color:#2ecc71;" id="count-mediano">Disponibles: 0</span></div>
+                        <button class="btn-nav" onclick="startNewPainting(450, 338, 'mediano')">Usar Mediano</button>
+                    </div>
+                    <div class="store-row">
+                        <div>Lienzo Grande (600x450) <br><span style="font-size:11px; color:#2ecc71;" id="count-grande">Disponibles: 0</span></div>
+                        <button class="btn-nav" onclick="startNewPainting(600, 450, 'grande')">Usar Grande</button>
+                    </div>
+                    <button class="btn-nav" style="background: #555; width: 100%; margin-top: 5px;" onclick="closeNewPaintingModal()">Cancelar</button>
+                </div>
+
+                <!-- PANTALLA DE LIENZO ACTIVO -->
+                <div id="paint-canvas-screen" class="screen">
+                    <div class="title-box" id="paint-title-label">Lienzo en Curso</div>
+                    <div class="toolbar">
+                        <button class="tool-btn active" onclick="setTool('pincel')">🖌️ Pincel</button>
+                        <button class="tool-btn" onclick="setTool('difuminar')">💨 Difuminar</button>
+                        <button class="tool-btn" onclick="setTool('lapiz')">✏️ Lápiz</button>
+                    </div>
+                    <div class="palette" id="dynamic-palette"></div>
+                    <div style="text-align: center;">
+                        <div class="canvas-container">
+                            <canvas id="paintCanvas"></canvas>
+                        </div>
+                    </div>
+                    <div class="actions-footer">
+                        <button class="btn-action btn-discard" onclick="discardCanvasPermanently()">🗑️ Eliminar Cuadro</button>
+                        <button class="btn-action btn-finish" onclick="finishAndSendToShed()">✨ Guardar en Galpón</button>
+                    </div>
+                </div>
+
+                <!-- MOCHILA TIPO WOW (10x10) -->
+                <div id="inventory-screen" class="screen">
+                    <div class="panel-box">
+                        <div class="panel-title">🎒 Mochila del Aventurero (10x10)</div>
+                        <div style="font-size: 12px; color: #aaa; text-align: center; margin-bottom: 5px;">Mueve ítems haciendo clic en origen y destino. Clic en un frasquito para gestionar, mover o mezclar.</div>
+                        <div style="font-size: 11px; color: #2ecc71; text-align: center;" id="inv-status-action">Espacio libre seleccionado.</div>
+                        
+                        <div class="wow-inventory-grid" id="wow-inventory-container"></div>
+                    </div>
+                </div>
+
+                <!-- TIENDA DE SUMINISTROS -->
+                <div id="supply-screen" class="screen">
+                    <div class="panel-box">
+                        <div class="panel-title">🛒 Tienda de Suministros</div>
+                        
+                        <div class="sub-navs">
+                            <button class="sub-tab-btn active" onclick="switchShopTab('lienzos', this)">📦 Lienzos</button>
+                            <button class="sub-tab-btn" onclick="switchShopTab('marcos', this)">🖼️ Marcos</button>
+                            <button class="sub-tab-btn" onclick="switchShopTab('pinturas', this)">🎨 Pinturas</button>
+                        </div>
+
+                        <div id="shop-lienzos" class="shop-category-section active">
+                            <div class="store-row">
+                                <div>Lienzo Chico (💵 20) - 300x225</div>
+                                <button class="btn-nav" onclick="buyItem('lienzo', 'chico', 20)">Comprar</button>
+                            </div>
+                            <div class="store-row">
+                                <div>Lienzo Mediano (💵 50) - 450x338</div>
+                                <button class="btn-nav" onclick="buyItem('lienzo', 'mediano', 50)">Comprar</button>
+                            </div>
+                            <div class="store-row">
+                                <div>Lienzo Grande (💵 100) - 600x450</div>
+                                <button class="btn-nav" onclick="buyItem('lienzo', 'grande', 100)">Comprar</button>
+                            </div>
+                        </div>
+
+                        <div id="shop-marcos" class="shop-category-section">
+                            <div class="store-row">
+                                <div>Marco de Madera Simple (💵 30)</div>
+                                <button class="btn-nav" onclick="buyItem('marco', 'madera', 30)">Comprar</button>
+                            </div>
+                            <div class="store-row">
+                                <div>Marco de Roble Tallado (💵 75)</div>
+                                <button class="btn-nav" onclick="buyItem('marco', 'roble', 75)">Comprar</button>
+                            </div>
+                            <div class="store-row">
+                                <div>Marco Dorado de Lujo (💵 150)</div>
+                                <button class="btn-nav" onclick="buyItem('marco', 'dorado', 150)">Comprar</button>
+                            </div>
+                        </div>
+
+                        <div id="shop-pinturas" class="shop-category-section">
+                            <div class="store-row" style="display: flex; align-items: center; justify-content: space-between;">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div class="paint-bottle" style="width: 16px; height: 22px;">
+                                        <div class="paint-bottle-cap" style="width: 10px; height: 5px; top: -5px; left: 2px;"></div>
+                                        <div class="paint-bottle-label">AD</div>
+                                        <div class="paint-bottle-liquid" style="background: #e74c3c; height: 100%;"></div>
+                                    </div>
+                                    <strong>Frasquito Chico (1L) - (💵 20)</strong>
+                                    <input type="color" id="picker-chico" value="#e74c3c" style="cursor:pointer; border:none; width:25px; height:20px; background:none;">
+                                </div>
+                                <button class="btn-nav" onclick="buyPaintCan('chico', 20, 1)">Comprar</button>
+                            </div>
+                            <div class="store-row" style="display: flex; align-items: center; justify-content: space-between;">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div class="paint-bottle" style="width: 16px; height: 22px;">
+                                        <div class="paint-bottle-cap" style="width: 10px; height: 5px; top: -5px; left: 2px;"></div>
+                                        <div class="paint-bottle-label">AD</div>
+                                        <div class="paint-bottle-liquid" style="background: #3498db; height: 100%;"></div>
+                                    </div>
+                                    <strong>Frasquito Mediano (2L) - (💵 35)</strong>
+                                    <input type="color" id="picker-mediano" value="#3498db" style="cursor:pointer; border:none; width:25px; height:20px; background:none;">
+                                </div>
+                                <button class="btn-nav" onclick="buyPaintCan('mediano', 35, 2)">Comprar</button>
+                            </div>
+                            <div class="store-row" style="display: flex; align-items: center; justify-content: space-between;">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div class="paint-bottle" style="width: 16px; height: 22px;">
+                                        <div class="paint-bottle-cap" style="width: 10px; height: 5px; top: -5px; left: 2px;"></div>
+                                        <div class="paint-bottle-label">AD</div>
+                                        <div class="paint-bottle-liquid" style="background: #f1c40f; height: 100%;"></div>
+                                    </div>
+                                    <strong>Frasco Grande (5L) - (💵 60)</strong>
+                                    <input type="color" id="picker-grande" value="#f1c40f" style="cursor:pointer; border:none; width:25px; height:20px; background:none;">
+                                </div>
+                                <button class="btn-nav" onclick="buyPaintCan('grande', 60, 5)">Comprar</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- SIDEBAR DE OFERTAS -->
+            <div class="sidebar-area">
+                <div class="panel-box" style="margin-bottom:0; height: 100%;">
+                    <div class="panel-title">🏷️ Ofertas Recibidas</div>
+                    <div id="offers-container" style="font-size: 12px; color: #aaa; text-align: center; margin-top: 20px;">
+                        No hay ofertas activas.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- REGISTRO DE EVENTOS -->
+        <div class="event-log-container">
+            <div class="panel-box" style="margin-bottom: 0;">
+                <div class="panel-title" style="text-align: left; margin-bottom: 6px;">📜 Registro de Eventos</div>
+                <div class="event-log" id="event-log">
+                    <div>[15:15] ¡Bienvenido a Art Tycoon Master, Ese!</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOOLTIP FLOTANTE -->
+    <div id="inv-tooltip" class="inv-tooltip"></div>
+
+    <!-- MODAL DE GESTIÓN DE FRASQUITO -->
+    <div id="tacho-modal">
+        <div class="modal-content">
+            <h3 id="tacho-modal-title" style="color: #ffd700; margin-top:0;">Gestionar Frasquito</h3>
+            <p id="tacho-modal-desc" style="font-size: 13px; color: #ccc;"></p>
+            <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 15px;">
+                <button class="btn-nav" style="background: #4e4ee1;" onclick="startMoveFromModal()">Mover de lugar</button>
+                <button class="btn-nav" style="background: #b8860b;" onclick="openMixModal()">Mezclar con otro color</button>
+                <button class="btn-nav" style="background: #2e8b57;" onclick="refillSelectedTacho()">Rellenar (💵 <span id="refill-cost">10</span>)</button>
+                <button class="btn-nav" style="background: #c0392b;" onclick="discardSelectedTacho()">Descartar Frasquito</button>
+                <button class="btn-nav" style="background: #555;" onclick="closeTachoModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE MEZCLA DE COLORES -->
+    <div id="mix-modal">
+        <div class="modal-content">
+            <h3 style="color: #ffd700; margin-top:0;">🎨 Mezclar Pinturas</h3>
+            <p style="font-size: 12px; color: #ccc;">Selecciona el segundo frasquito en tu mochila para combinar sus litros y proporciones de pigmento.</p>
+            <button class="btn-nav" style="background: #2e8b57; margin-top: 10px;" onclick="confirmMixMode()">Elegir segundo frasco en mochila</button>
+            <button class="btn-nav" style="background: #555; margin-top: 5px; width: 100%;" onclick="closeMixModal()">Cancelar</button>
+        </div>
+    </div>
+
+    <!-- MODAL DE EVALUACIÓN MEJORADO -->
+    <div id="eval-modal">
+        <div class="modal-content">
+            <!-- Botón de cierre libre 'X' para no trabar nunca -->
+            <button onclick="closeEvalModal()" style="position: absolute; top: 10px; right: 12px; background: none; border: none; color: #aaa; font-size: 16px; cursor: pointer; font-weight: bold;">✕</button>
+            <h3 id="modal-title" style="color: #ffd700; margin-top:0;">Evaluando Oferta</h3>
+            <div id="modal-client-info" style="font-size: 13px; color: #3498db; margin-bottom: 6px; font-weight: bold;">Cliente</div>
+            <p id="modal-desc" style="font-size: 12px; color: #ddd; background: #151522; padding: 8px; border-radius: 4px; text-align: left;"></p>
+            <div style="font-size: 13px; color: #f1c40f; margin: 6px 0;" id="modal-score">⭐ Calificación: 8.5 / 10</div>
+            
+            <div style="font-size: 16px; font-weight: bold; color: #e74c3c; background: #2a1a1a; padding: 5px; border-radius: 4px; margin: 8px 0;">
+                ⏰ Tiempo restante: <span id="modal-timer">30</span>s
+            </div>
+            <div style="font-size: 14px; color: #2ecc71; font-weight: bold; margin-bottom: 12px;" id="modal-price">Propuesta: 💵 280</div>
+            
+            <div style="display: flex; gap: 10px; justify-content: center;" id="modal-buttons-container">
+                <button class="btn-nav" style="background: #2e8b57;" onclick="acceptActiveOffer()">Aceptar Venta</button>
+                <button class="btn-nav" style="background: #d93838;" onclick="closeEvalModal()">Cerrar / Revisar después</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+    let gold = 350;
+    let reputation = 100;
+    let storeOpen = false;
+    let storeMaxExhibitionSlots = 5;
+    
+    let wowInventory = Array(100).fill(null);
+    let selectedInvSlot = null;
+    let activeTachoModalIndex = null;
+    let mixingSourceIndex = null;
+    let isSelectingTargetForMix = false;
+
+    wowInventory[0] = { type: 'lienzo', sub: 'chico', name: 'Lienzo Chico', icon: '📦', count: 2 };
+    wowInventory[1] = { type: 'marco', sub: 'madera', name: 'Marco de Madera', icon: '🖼️', count: 1 };
+    wowInventory[2] = { type: 'tacho', name: 'Rojo Estándar', color: '#e74c3c', liters: 1, maxLiters: 1, proportions: { '#e74c3c': 100 } };
+
+    let shedPaintings = [];
+
+    let canvas, ctx;
+    let painting = false;
+    let currentTool = 'pincel';
+    let currentColor = '#000000';
+    let activeOffers = [];
+    let currentEvalIndex = null;
+    let evalTimerInterval = null;
+    let evalTimeLeft = 30;
+    let editingPaintingId = null;
+    let currentCanvasName = "Obra sin título";
+    let currentSizeLabel = "chico";
+    let storeVisitorLoop = null;
+
+    // Control de vista en Tienda (grid o catalog)
+    let galleryViewMode = 'grid';
+    let catalogCurrentIndex = 0;
+
+    const clientPersonalities = [
+        {
+            name: "Solitario",
+            descType: "busca obras sobrias, oscuras y de tonos profundos que transmitan introspección.",
+            eval: (r, g, b, brightness, complexity) => brightness < 120 ? 8 + Math.random()*2 : 4 + Math.random()*3
+        },
+        {
+            name: "Excéntrico",
+            descType: "ama lo vanguardista, estridente y de colores muy vivos o contrastados.",
+            eval: (r, g, b, brightness, complexity) => Math.abs(r - g) + Math.abs(g - b) > 100 ? 8.5 + Math.random()*1.5 : 5 + Math.random()*3
+        },
+        {
+            name: "Alegre",
+            descType: "adora los tonos luminosos, cálidos y vibrantes que transmitan energía positiva.",
+            eval: (r, g, b, brightness, complexity) => brightness > 140 ? 8 + Math.random()*2 : 4 + Math.random()*3
+        },
+        {
+            name: "Intelectual",
+            descType: "analiza detalladamente las formas, la proporción y la complejidad técnica de la obra.",
+            eval: (r, g, b, brightness, complexity) => Math.min(10, 5 + (complexity / 15) + Math.random() * 2)
+        },
+        {
+            name: "Pragmático",
+            descType: "busca arte decorativo sin vueltas, fijándose mucho en si el precio es razonable.",
+            eval: (r, g, b, brightness, complexity) => 6 + Math.random() * 3
+        }
+    ];
+
+    const clientFirstNames = ["Carlos", "Valentina", "Mateo", "Sofía", "Lucía", "Alejandro", "Martina", "Joaquín", "Camila", "Franco", "Bianca", "Thiago"];
+
+    function requestSwitchScreen(screenId) {
+        const activeScreen = document.querySelector('.screen.active');
+        if(activeScreen && activeScreen.id === 'paint-canvas-screen' && screenId !== 'paint-canvas-screen') {
+            autoSaveAndSendToShed();
+        }
+        switchScreen(screenId);
+    }
+
+    function switchScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        const targetScreen = document.getElementById(screenId);
+        if (targetScreen) targetScreen.classList.add('active');
+        if(screenId === 'inventory-screen') renderWowInventory();
+        if(screenId === 'shed-screen') renderShedUI();
+        if(screenId === 'gallery-screen') renderExhibitionSlots();
+    }
+
+    function switchShopTab(category, btnElem) {
+        document.querySelectorAll('.shop-category-section').forEach(sec => sec.classList.remove('active'));
+        document.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.remove('active'));
+        const targetSection = document.getElementById('shop-' + category);
+        if (targetSection) targetSection.classList.add('active');
+        if (btnElem) btnElem.classList.add('active');
+    }
+
+    function logEvent(text) {
+        const log = document.getElementById('event-log');
+        if (!log) return;
+        const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        log.innerHTML += `<div>[${time}] ${text}</div>`;
+        log.scrollTop = log.scrollHeight;
+        
+        const pageTitle = document.getElementById('page-title');
+        if (pageTitle) pageTitle.innerText = "🔴 ¡Novedad! - Art Tycoon Master";
+    }
+
+    window.addEventListener('focus', () => {
+        const pageTitle = document.getElementById('page-title');
+        if (pageTitle) pageTitle.innerText = "Art Tycoon Master";
+    });
+
+    function toggleStore() {
+        storeOpen = !storeOpen;
+        const btn = document.getElementById('store-toggle-btn');
+        const storeStatusDesc = document.getElementById('store-status-desc');
+        
+        if(storeOpen) {
+            if (btn) { btn.innerText = "Tienda Abierta"; btn.style.background = "#2e8b57"; }
+            if (storeStatusDesc) storeStatusDesc.innerText = "Abierta: Recibiendo visitantes";
+            logEvent("🚪 Abriste la tienda al público.");
+            startVisitorFlow();
+        } else {
+            if (btn) { btn.innerText = "Tienda Cerrada"; btn.style.background = "#d93838"; }
+            if (storeStatusDesc) storeStatusDesc.innerText = "Cerrada: No entran visitantes";
+            
+            if(storeVisitorLoop) clearInterval(storeVisitorLoop);
+
+            if(activeOffers.length > 0) {
+                reputation = Math.max(0, reputation - 12);
+                const repVal = document.getElementById('reputation-val');
+                if (repVal) repVal.innerText = reputation;
+                logEvent("⚠️ ¡Cerraste la tienda de golpe y echaste a los clientes que miraban! Reputación -12%.");
+                activeOffers = [];
+                renderOffers();
+                closeEvalModal();
+            } else {
+                logEvent("🔒 Cerraste la tienda ordenadamente.");
+            }
+        }
+        renderExhibitionSlots();
+    }
+
+    function startVisitorFlow() {
+        if(storeVisitorLoop) clearInterval(storeVisitorLoop);
+        let intervalTime = Math.max(5000, 30000 - (reputation * 220));
+
+        storeVisitorLoop = setInterval(() => {
+            if(!storeOpen) return;
+            let exhibitedCount = shedPaintings.filter(p => p.status === "En Exhibición").length;
+            if(exhibitedCount > 0 && activeOffers.length < 3) {
+                receiveNewOffer();
+            }
+        }, intervalTime);
+    }
+
+    // SELECTOR DE VISTA EN TIENDA
+    function setGalleryViewMode(mode) {
+        galleryViewMode = mode;
+        document.getElementById('view-mode-grid').classList.toggle('active', mode === 'grid');
+        document.getElementById('view-mode-catalog').classList.toggle('active', mode === 'catalog');
+        
+        document.getElementById('exhibition-slots-container').style.display = (mode === 'grid') ? 'grid' : 'none';
+        document.getElementById('exhibition-catalog-container').style.display = (mode === 'catalog') ? 'block' : 'none';
+
+        renderExhibitionSlots();
+    }
+
+    function renderExhibitionSlots() {
+        if (galleryViewMode === 'grid') {
+            renderExhibitionGrid();
+        } else {
+            renderExhibitionCatalog();
+        }
+    }
+
+    function renderExhibitionGrid() {
+        const container = document.getElementById('exhibition-slots-container');
+        if(!container) return;
+        container.innerHTML = "";
+
+        for(let i = 0; i < storeMaxExhibitionSlots; i++) {
+            let exhibitedPainting = shedPaintings.find(p => p.slotIndex === i && p.status === "En Exhibición");
+
+            if(exhibitedPainting) {
+                let visitorStatusState = storeOpen ? "👤 Clientes observando..." : "👤 Tienda cerrada";
+                let visitorTextColor = storeOpen ? "#2ecc71" : "#e74c3c";
+
+                container.innerHTML += `
+                    <div class="painting-slot">
+                        <div style="font-weight: bold; font-size: 13px;">${exhibitedPainting.name} <span style="color:#ffd700">by ${exhibitedPainting.author || 'Ese'}</span></div>
+                        <div style="font-size: 11px; color: #aaa;">Precio base: 💵 ${exhibitedPainting.price.toLocaleString()}</div>
+                        <div style="font-size: 11px; color: ${visitorTextColor}; margin: 4px 0;">${visitorStatusState}</div>
+                        <button class="btn-nav" style="background: #c0392b; font-size: 10px; padding: 3px 6px;" onclick="retirarCuadro(${exhibitedPainting.id})">Retirar al Galpón</button>
+                    </div>
+                `;
+            } else {
+                container.innerHTML += `
+                    <div class="painting-slot" style="border-style: solid; display: flex; flex-direction:column; align-items: center; justify-content: center; color: #777; font-size: 12px; cursor: pointer;" onclick="requestSwitchScreen('shed-screen')">
+                        <span>+ Exponer Obra</span>
+                        <span style="font-size: 9px; color: #555; margin-top: 4px;">Ranura #${i+1} vacía</span>
+                    </div>
+                `;
+            }
+        }
+    }
+
+    // RENDERIZADO DEL CATÁLOGO CON EFECTO FADE
+    function renderExhibitionCatalog() {
+        let exhibitedList = shedPaintings.filter(p => p.status === "En Exhibición");
+        if (exhibitedList.length === 0) {
+            document.getElementById('catalog-title').innerText = "Sin obras en exposición";
+            document.getElementById('catalog-author').innerText = "Exhibí obras desde tu galpón";
+            document.getElementById('catalog-img').src = "";
+            document.getElementById('catalog-price').innerText = "";
+            document.getElementById('catalog-visitor-state').innerText = "";
+            document.getElementById('catalog-counter').innerText = "0 / 0";
+            return;
+        }
+
+        if (catalogCurrentIndex >= exhibitedList.length) catalogCurrentIndex = 0;
+        let currentP = exhibitedList[catalogCurrentIndex];
+
+        let visitorStatusState = storeOpen ? "👤 Clientes observando la obra..." : "👤 Tienda cerrada";
+        let visitorTextColor = storeOpen ? "#2ecc71" : "#e74c3c";
+
+        document.getElementById('catalog-title').innerText = currentP.name;
+        document.getElementById('catalog-author').innerText = `by ${currentP.author || 'Ese'}`;
+        document.getElementById('catalog-img').src = currentP.dataUrl;
+        document.getElementById('catalog-price').innerText = `Precio: 💵 ${currentP.price.toLocaleString()}`;
+        
+        let visitorElem = document.getElementById('catalog-visitor-state');
+        visitorElem.innerText = visitorStatusState;
+        visitorElem.style.color = visitorTextColor;
+
+        document.getElementById('catalog-counter').innerText = `${catalogCurrentIndex + 1} / ${exhibitedList.length}`;
+    }
+
+    function changeCatalogSlide(direction) {
+        let exhibitedList = shedPaintings.filter(p => p.status === "En Exhibición");
+        if (exhibitedList.length <= 1) return;
+
+        let viewContent = document.getElementById('catalog-view-content');
+        viewContent.classList.add('fade-out');
+
+        setTimeout(() => {
+            catalogCurrentIndex += direction;
+            if (catalogCurrentIndex < 0) catalogCurrentIndex = exhibitedList.length - 1;
+            if (catalogCurrentIndex >= exhibitedList.length) catalogCurrentIndex = 0;
+
+            renderExhibitionCatalog();
+            viewContent.classList.remove('fade-out');
+        }, 300); // Duración sincronizada con el CSS transition
+    }
+
+    function retirarCuadro(paintingId) {
+        if(storeOpen) {
+            alert("⚠️ ¡Acción bloqueada! La tienda debe estar CERRADA para retirar o cambiar cuadros.");
+            return;
+        }
+        let p = shedPaintings.find(item => item.id === paintingId);
+        if(p) {
+            p.status = "En Galpón";
+            delete p.slotIndex;
+            logEvent("🏗️ Retiraste el cuadro de la exposición al Galpón.");
+        }
+        renderExhibitionSlots();
+    }
+
+    function renderShedUI() {
+        const container = document.getElementById('shed-container');
+        if(!container) return;
+        if(shedPaintings.length === 0) {
+            container.innerHTML = `<div style="color: #777; font-size: 13px; text-align: center; padding: 15px;">El galpón está vacío.</div>`;
+            return;
+        }
+        container.innerHTML = "";
+        shedPaintings.forEach((p, idx) => {
+            let authorDisplay = p.author ? `<span style="color:#ffd700">by ${p.author}</span>` : '';
+            container.innerHTML += `
+                <div class="shed-item-card">
+                    <div>
+                        <strong><input type="text" id="shed-name-${idx}" value="${p.name}" style="background: #151522; color: #fff; border: 1px solid #444; border-radius: 4px; padding: 2px 4px; width: 130px;"></strong> ${authorDisplay} (${p.sizeName || 'Chico'} - ${p.width}x${p.height})<br>
+                        <span style="font-size: 11px; color: #aaa;">Estado: ${p.status} | Valor real estimado: 💵 ${(p.realValue || 150).toLocaleString()}</span>
+                    </div>
+                    <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+                        <span style="font-size: 12px; color: #2ecc71;">Precio: 💵 <input type="number" id="shed-price-${idx}" value="${p.price}" style="width: 80px; background: #151522; color: #fff; border: 1px solid #444; border-radius: 4px; padding: 2px 4px;"></span>
+                        <button class="btn-nav" style="font-size: 10px; padding: 4px 6px;" onclick="updateShedPaintingInfo(${idx})">Guardar</button>
+                        <button class="btn-nav" style="background: #b8860b; font-size: 10px; padding: 4px 6px;" onclick="editPaintingFromShed(${p.id})">✏️ Editar</button>
+                        <button class="btn-nav" style="background: #c0392b; font-size: 10px; padding: 4px 6px;" onclick="deletePaintingFromShed(${p.id})">🗑️ Borrar</button>
+                        ${p.status !== "En Exhibición" ? `<button class="btn-nav" style="background: #2e8b57; font-size: 10px; padding: 4px 6px;" onclick="openExhibitSelector(${idx})">Exponer</button>` : `<span style="font-size: 11px; color: #f1c40f;">En Exposición</span>`}
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    function deletePaintingFromShed(id) {
+        if(confirm("¿Estás seguro de eliminar permanentemente esta obra?")) {
+            shedPaintings = shedPaintings.filter(p => p.id !== id);
+            // También limpia ofertas asociadas si se borra la obra
+            activeOffers = activeOffers.filter(o => o.paintingId !== id);
+            renderOffers();
+            logEvent("🗑️ Borraste una obra.");
+            renderShedUI();
+            renderExhibitionSlots();
+        }
+    }
+
+    function updateShedPaintingInfo(idx) {
+        const nameInput = document.getElementById(`shed-name-${idx}`);
+        const priceInput = document.getElementById(`shed-price-${idx}`);
+        if(nameInput && priceInput) {
+            let newName = nameInput.value.trim() || "Obra sin título";
+            let newPrice = parseInt(priceInput.value) || 100;
+            shedPaintings[idx].name = newName;
+            shedPaintings[idx].price = newPrice;
+            logEvent(`✏️ Actualizaste información de la obra a "${newName}" (💵 ${newPrice.toLocaleString()}).`);
+            alert("Información guardada.");
+            renderExhibitionSlots();
+        }
+    }
+
+    function openExhibitSelector(shedIndex) {
+        if(storeOpen) {
+            alert("⚠️ La tienda debe estar CERRADA para exponer una obra.");
+            return;
+        }
+        let freeSlot = -1;
+        for(let i = 0; i < storeMaxExhibitionSlots; i++) {
+            let occupied = shedPaintings.some(p => p.slotIndex === i && p.status === "En Exhibición");
+            if(!occupied) { freeSlot = i; break; }
+        }
+        if(freeSlot === -1) {
+            alert(`⚠️ Todas tus ranuras de exhibición (${storeMaxExhibitionSlots}) están llenas.`);
+            return;
+        }
+        shedPaintings[shedIndex].status = "En Exhibición";
+        shedPaintings[shedIndex].slotIndex = freeSlot;
+        logEvent(`🏛️ Pusiste en exposición "${shedPaintings[shedIndex].name}" en ranura #${freeSlot + 1}.`);
+        requestSwitchScreen('gallery-screen');
+    }
+
+    function getAvailableInventoryCount(subType) {
+        let count = 0;
+        let isInfinite = false;
+        wowInventory.forEach(item => {
+            if(item !== null && item.type === 'lienzo' && item.sub === subType) {
+                if(item.infinite) isInfinite = true;
+                count += (item.count || 1);
+            }
+        });
+        return isInfinite ? '∞' : count;
+    }
+
+    function addItemToWowInventory(item) {
+        for(let i = 0; i < wowInventory.length; i++) {
+            if(wowInventory[i] === null) {
+                wowInventory[i] = item;
+                return true;
+            }
+        }
+        alert("¡Mochila llena!");
+        return false;
+    }
+
+    function buyItem(category, type, price) {
+        if(gold < price) { alert("Dinero insuficiente."); return; }
+        gold -= price;
+        document.getElementById('gold-val').innerText = gold.toLocaleString();
+        let newItem = { type: category, sub: type, name: `Lienzo ${type}`, icon: category === 'lienzo' ? '📦' : '🖼️', count: 1 };
+        if(category === 'marco') newItem.name = `Marco ${type}`;
+        if(addItemToWowInventory(newItem)) logEvent(`📦 Compraste ${newItem.name}.`);
+    }
+
+    function buyPaintCan(size, price, liters) {
+        if(gold < price) { alert("Dinero insuficiente."); return; }
+        gold -= price;
+        document.getElementById('gold-val').innerText = gold.toLocaleString();
+        let chosenColor = document.getElementById('picker-' + size).value;
+        let newCan = { type: 'tacho', name: `Frasco ${size} (${liters}L)`, color: chosenColor, liters: liters, maxLiters: liters, cost: price, proportions: {} };
+        newCan.proportions[chosenColor] = 100;
+        if(addItemToWowInventory(newCan)) {
+            logEvent(`🎨 Compraste frasquito (${liters}L).`);
+            alert("¡Adquirido con éxito!");
+        }
+    }
+
+    function renderWowInventory() {
+        const container = document.getElementById('wow-inventory-container');
+        if (!container) return;
+        container.innerHTML = "";
+        wowInventory.forEach((slot, index) => {
+            let div = document.createElement('div');
+            div.className = `inv-slot ${selectedInvSlot === index ? 'selected' : ''}`;
+            div.onclick = () => handleInventorySlotClick(index);
+            div.onmouseenter = (e) => showInventoryTooltip(e, slot);
+            div.onmouseleave = hideInventoryTooltip;
+
+            if(slot !== null) {
+                if(slot.type === 'tacho') {
+                    let percent = Math.max(0, Math.round((slot.liters / slot.maxLiters) * 100));
+                    div.innerHTML = `
+                        <div class="paint-bottle"><div class="paint-bottle-cap"></div><div class="paint-bottle-label">AD</div>
+                        <div class="paint-bottle-liquid" style="background: ${slot.color}; height: ${percent}%;"></div></div>
+                        <div class="inv-badge">${percent}%</div>`;
+                } else {
+                    div.innerHTML = `<span>${slot.icon}</span>`;
+                    let badgeVal = slot.infinite ? '∞' : (slot.count && slot.count > 1 ? slot.count : '');
+                    if(badgeVal !== '') div.innerHTML += `<div class="inv-badge">${badgeVal}</div>`;
+                }
+            }
+            container.appendChild(div);
+        });
+    }
+
+    function showInventoryTooltip(e, slot) {
+        if(!slot) return;
+        const tooltip = document.getElementById('inv-tooltip');
+        if(!tooltip) return;
+        if(slot.type === 'tacho') {
+            let propText = Object.entries(slot.proportions || {}).map(([col, pct]) => `${pct}% ${col}`).join(', ');
+            tooltip.innerHTML = `<strong>${slot.name}</strong><br>Color: ${slot.color}<br>Proporciones: [${propText}]<br>Volumen: ${slot.liters}L / ${slot.maxLiters}L`;
+        } else {
+            tooltip.innerHTML = `<strong>${slot.name}</strong>`;
+        }
+        tooltip.style.display = 'block';
+        tooltip.style.left = (e.pageX + 10) + 'px';
+        tooltip.style.top = (e.pageY + 10) + 'px';
+    }
+
+    function hideInventoryTooltip() {
+        const tooltip = document.getElementById('inv-tooltip');
+        if(tooltip) tooltip.style.display = 'none';
+    }
+
+    function handleInventorySlotClick(index) {
+        const statusText = document.getElementById('inv-status-action');
+        let clickedItem = wowInventory[index];
+
+        if(isSelectingTargetForMix) {
+            if(index === mixingSourceIndex) { alert("No puedes mezclar el frasco consigo mismo."); return; }
+            if(clickedItem === null || clickedItem.type !== 'tacho') { alert("Selecciona otro frasquito válido."); return; }
+            executeColorMixing(mixingSourceIndex, index);
+            isSelectingTargetForMix = false;
+            mixingSourceIndex = null;
+            return;
+        }
+
+        if(clickedItem !== null && clickedItem.type === 'tacho' && selectedInvSlot === null) {
+            openTachoModal(index);
+            return;
+        }
+
+        if(selectedInvSlot === null) {
+            if(clickedItem !== null) {
+                selectedInvSlot = index;
+                statusText.innerText = `Seleccionado: ${clickedItem.name}. Clic en otro espacio para moverlo.`;
+                renderWowInventory();
+            }
+        } else {
+            let temp = wowInventory[selectedInvSlot];
+            wowInventory[selectedInvSlot] = wowInventory[index];
+            wowInventory[index] = temp;
+            selectedInvSlot = null;
+            statusText.innerText = `Espacio libre seleccionado.`;
+            renderWowInventory();
+        }
+    }
+
+    function openTachoModal(index) {
+        activeTachoModalIndex = index;
+        let tacho = wowInventory[index];
+        if(!tacho) return;
+        let missingLiters = Math.max(0, tacho.maxLiters - tacho.liters);
+        let baseCost = tacho.cost || 30;
+        let refillCost = Math.max(5, Math.round((missingLiters / tacho.maxLiters) * baseCost));
+
+        document.getElementById('tacho-modal-title').innerText = tacho.name;
+        document.getElementById('tacho-modal-desc').innerText = `Color: ${tacho.color} | Litros: ${tacho.liters}L / ${tacho.maxLiters}L`;
+        document.getElementById('refill-cost').innerText = refillCost;
+        document.getElementById('tacho-modal').style.display = 'flex';
+    }
+
+    function closeTachoModal() { document.getElementById('tacho-modal').style.display = 'none'; }
+    function startMoveFromModal() {
+        selectedInvSlot = activeTachoModalIndex;
+        closeTachoModal();
+        document.getElementById('inv-status-action').innerText = `Moviendo frasco. Haz clic en espacio destino.`;
+        requestSwitchScreen('inventory-screen');
+    }
+    function openMixModal() { closeTachoModal(); mixingSourceIndex = activeTachoModalIndex; document.getElementById('mix-modal').style.display = 'flex'; }
+    function closeMixModal() { document.getElementById('mix-modal').style.display = 'none'; }
+    function confirmMixMode() { closeMixModal(); isSelectingTargetForMix = true; document.getElementById('inv-status-action').innerText = `🎨 Haz clic en el segundo frasco en tu mochila.`; requestSwitchScreen('inventory-screen'); }
+
+    function hexToRgb(hex) {
+        let bigint = parseInt(hex.replace('#',''), 16);
+        return [(bigint >> 16) & 255, (bigint >> 8) & 255, bigint & 255];
+    }
+    function rgbToHex(r, g, b) {
+        return "#" + ((1 << 24) + (Math.round(r) << 16) + (Math.round(g) << 8) + Math.round(b)).toString(16).slice(1);
+    }
+
+    function executeColorMixing(idx1, idx2) {
+        let f1 = wowInventory[idx1], f2 = wowInventory[idx2];
+        let props1 = f1.proportions || { [f1.color]: 100 }, props2 = f2.proportions || { [f2.color]: 100 };
+        let l1 = f1.liters, l2 = f2.liters, totalLiters = l1 + l2;
+        let absolutePigments = {};
+        for(let [col, pct] of Object.entries(props1)) absolutePigments[col] = (absolutePigments[col] || 0) + (l1 * (pct / 100));
+        for(let [col, pct] of Object.entries(props2)) absolutePigments[col] = (absolutePigments[col] || 0) + (l2 * (pct / 100));
+        let newProportions = {}, finalR = 0, finalG = 0, finalB = 0;
+        for(let [col, amount] of Object.entries(absolutePigments)) {
+            let percentage = (amount / totalLiters) * 100;
+            newProportions[col] = parseFloat(percentage.toFixed(1));
+            let [r, g, b] = hexToRgb(col);
+            finalR += r * (percentage / 100); finalG += g * (percentage / 100); finalB += b * (percentage / 100);
+        }
+        let blendedHex = rgbToHex(finalR, finalG, finalB);
+        let mixedBottle = { type: 'tacho', name: `Frasco Mezcla (${totalLiters}L)`, color: blendedHex, liters: totalLiters, maxLiters: totalLiters, cost: 40, proportions: newProportions };
+        wowInventory[idx1] = null; wowInventory[idx2] = null;
+        if(addItemToWowInventory(mixedBottle)) alert(`¡Mezcla completada! Tono ${blendedHex}`);
+        renderWowInventory();
+    }
+
+    function refillSelectedTacho() {
+        let tacho = wowInventory[activeTachoModalIndex];
+        let missingLiters = tacho.maxLiters - tacho.liters;
+        if(missingLiters <= 0) { alert("Ya está lleno."); return; }
+        let refillCost = Math.max(5, Math.round((missingLiters / tacho.maxLiters) * (tacho.cost || 30)));
+        if(gold < refillCost) { alert("Dinero insuficiente."); return; }
+        gold -= refillCost; document.getElementById('gold-val').innerText = gold.toLocaleString();
+        tacho.liters = tacho.maxLiters;
+        closeTachoModal(); renderWowInventory();
+    }
+
+    function discardSelectedTacho() {
+        if(confirm("¿Descartar frasquito?")) { wowInventory[activeTachoModalIndex] = null; closeTachoModal(); renderWowInventory(); }
+    }
+
+    function openNewPaintingModal() {
+        document.getElementById('count-chico').innerText = `Disponibles: ${getAvailableInventoryCount('chico')}`;
+        document.getElementById('count-mediano').innerText = `Disponibles: ${getAvailableInventoryCount('mediano')}`;
+        document.getElementById('count-grande').innerText = `Disponibles: ${getAvailableInventoryCount('grande')}`;
+        document.getElementById('new-painting-modal').style.display = 'block';
+    }
+    function closeNewPaintingModal() { document.getElementById('new-painting-modal').style.display = 'none'; }
+
+    function startNewPainting(width, height, tipo) {
+        let foundIndex = wowInventory.findIndex(item => item !== null && item.type === 'lienzo' && item.sub === tipo);
+        if(foundIndex === -1) { alert(`No tienes stock de lienzos ${tipo}.`); return; }
+        if(!wowInventory[foundIndex].infinite) {
+            if(wowInventory[foundIndex].count && wowInventory[foundIndex].count > 1) wowInventory[foundIndex].count--;
+            else wowInventory[foundIndex] = null;
+        }
+        currentCanvasName = document.getElementById('input-painting-name').value.trim() || "Paisaje tal";
+        currentSizeLabel = tipo;
+        editingPaintingId = null;
+        closeNewPaintingModal();
+        setupCanvasEnvironment(width, height, null);
+    }
+
+    function editPaintingFromShed(id) {
+        let p = shedPaintings.find(item => item.id === id);
+        if(!p) return;
+        editingPaintingId = p.id; currentCanvasName = p.name; currentSizeLabel = p.sizeName || 'chico';
+        setupCanvasEnvironment(p.width, p.height, p.dataUrl);
+    }
+
+    function setupCanvasEnvironment(width, height, initialDataUrl) {
+        switchScreen('paint-canvas-screen');
+        document.getElementById('paint-title-label').innerText = `Lienzo: ${currentCanvasName} | Artista: Ese | Tamaño: ${width}x${height}px`;
+        canvas = document.getElementById('paintCanvas');
+        canvas.width = width; canvas.height = height;
+        ctx = canvas.getContext('2d');
+        if(initialDataUrl) {
+            let img = new Image();
+            img.onload = () => { ctx.clearRect(0,0,canvas.width,canvas.height); ctx.drawImage(img,0,0); };
+            img.src = initialDataUrl;
+        } else {
+            ctx.fillStyle = "#FFFFFF"; ctx.fillRect(0,0,canvas.width,canvas.height);
+        }
+        canvas.onmousedown = (e) => { painting = true; draw(e); };
+        canvas.onmouseup = () => { painting = false; ctx.beginPath(); };
+        canvas.onmousemove = draw;
+        canvas.onmouseleave = () => { painting = false; ctx.beginPath(); };
+        updatePaletteUI();
+    }
+
+    function updatePaletteUI() {
+        const palette = document.getElementById('dynamic-palette');
+        if (!palette) return;
+        palette.innerHTML = "";
+        let paletteItems = [{ name: 'Negro Infinito', color: '#000000', infinite: true }];
+        wowInventory.forEach(item => { if(item !== null && item.type === 'tacho') paletteItems.push(item); });
+        paletteItems.forEach((tacho) => {
+            let percent = tacho.infinite ? 100 : Math.max(0, Math.round((tacho.liters / tacho.maxLiters) * 100));
+            let isActive = (currentColor === tacho.color);
+            palette.innerHTML += `
+                <div class="workshop-bottle-wrapper ${isActive ? 'active-color' : ''}" onclick="selectPaintColor('${tacho.color}')">
+                    <div class="paint-bottle"><div class="paint-bottle-cap"></div><div class="paint-bottle-label">AD</div>
+                    <div class="paint-bottle-liquid" style="background: ${tacho.color}; height: ${percent}%;"></div></div>
+                    <div style="font-size:9px; color:#aaa; margin-top:2px;">${tacho.infinite ? '∞' : percent + '%'}</div>
+                </div>`;
+        });
+    }
+
+    function selectPaintColor(colorHex) { currentColor = colorHex; updatePaletteUI(); }
+    function setTool(tool) {
+        currentTool = tool;
+        document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+        if (event && event.target) event.target.classList.add('active');
+    }
+
+    function draw(e) {
+        if (!painting || !canvas || !ctx) return;
+        const rect = canvas.getBoundingClientRect();
+        const x = (e.clientX - rect.left) * (canvas.width / rect.width);
+        const y = (e.clientY - rect.top) * (canvas.height / rect.height);
+
+        let hasPaint = currentColor === '#000000';
+        if(!hasPaint) {
+            wowInventory.forEach(item => {
+                if(item !== null && item.type === 'tacho' && item.color === currentColor && item.liters > 0) {
+                    hasPaint = true;
+                    item.liters = parseFloat((item.liters - 0.001).toFixed(3));
+                    if(item.liters <= 0) {
+                        item.liters = 0;
+                        for(let i=0; i<wowInventory.length; i++) if(wowInventory[i] === item) { wowInventory[i] = null; break; }
+                        currentColor = '#000000';
+                    }
+                }
+            });
+        }
+        updatePaletteUI();
+        if(!hasPaint) return;
+        ctx.lineWidth = currentTool === 'lapiz' ? 2 : (currentTool === 'pincel' ? 8 : 15);
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = currentTool === 'difuminar' ? 'rgba(0,0,0,0.1)' : currentColor;
+        ctx.lineTo(x, y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x, y);
+    }
+
+    // ANÁLISIS MEJORADO Y ESTRICTO CONTRA GARABATOS SIN SENTIDO
+    function analyzeCanvasData(paintingItem) {
+        let tempCanvas = document.createElement('canvas');
+        tempCanvas.width = paintingItem.width; tempCanvas.height = paintingItem.height;
+        let tCtx = tempCanvas.getContext('2d');
+        let img = new Image();
+        img.src = paintingItem.dataUrl;
+        
+        tCtx.drawImage(img, 0, 0);
+        let imgData = tCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height).data;
+        
+        let rSum = 0, gSum = 0, bSum = 0, nonWhitePixels = 0, uniqueColors = {};
+        let totalPixelsSampled = 0;
+
+        for (let i = 0; i < imgData.length; i += 16) {
+            let r = imgData[i], g = imgData[i+1], b = imgData[i+2];
+            totalPixelsSampled++;
+            
+            // Considerar píxel pintado si se aparta sustancialmente del blanco puro
+            if(!(r > 240 && g > 240 && b > 240)) {
+                nonWhitePixels++;
+                rSum += r; gSum += g; bSum += b;
+                let colorKey = `${Math.round(r/25)}_${Math.round(g/25)}_${Math.round(b/25)}`;
+                uniqueColors[colorKey] = true;
+            }
+        }
+
+        let complexityRatio = nonWhitePixels / totalPixelsSampled;
+        let colorVarietyCount = Object.keys(uniqueColors).length;
+        
+        let avgR = nonWhitePixels > 0 ? rSum / nonWhitePixels : 255;
+        let avgG = nonWhitePixels > 0 ? gSum / nonWhitePixels : 255;
+        let avgB = nonWhitePixels > 0 ? bSum / nonWhitePixels : 255;
+        let brightness = (avgR * 0.299 + avgG * 0.587 + avgB * 0.114);
+
+        // PENALIZACIÓN SEVERA PARA GARABATOS POBRES: Si tiene menos del 3% de la pantalla pintada o menos de 2 colores, se invalida casi por completo
+        let qualityMultiplier = 1.0;
+        if (complexityRatio < 0.03 || colorVarietyCount < 2) {
+            qualityMultiplier = 0.05; // Lo reduce a un valor casi nulo de garabato tonto
+        }
+
+        let sizeMultiplier = paintingItem.sizeName === 'grande' ? 50 : (paintingItem.sizeName === 'mediano' ? 25 : 10);
+        let realBaseValue = Math.round((50 + (complexityRatio * 500 * sizeMultiplier) + (colorVarietyCount * 120 * sizeMultiplier)) * qualityMultiplier);
+        
+        if(complexityRatio > 0.6 && colorVarietyCount > 8 && paintingItem.sizeName === 'grande' && qualityMultiplier > 0.5) {
+            realBaseValue = Math.max(realBaseValue, 8500000 + Math.floor(Math.random() * 2500000));
+        }
+
+        return { r: avgR, g: avgG, b: avgB, brightness: brightness, complexity: complexityRatio * 100, realValue: realBaseValue, isScribble: qualityMultiplier <= 0.05, colorsCount: colorVarietyCount };
+    }
+
+    function autoSaveAndSendToShed() {
+        if (!canvas) return;
+        const dataUrl = canvas.toDataURL();
+        let tempObj = { width: canvas.width, height: canvas.height, dataUrl: dataUrl, sizeName: currentSizeLabel };
+        let analysis = analyzeCanvasData(tempObj);
+
+        if (editingPaintingId !== null) {
+            let existing = shedPaintings.find(p => p.id === editingPaintingId);
+            if (existing) { 
+                existing.name = currentCanvasName; 
+                existing.dataUrl = dataUrl; 
+                existing.width = canvas.width; 
+                existing.height = canvas.height; 
+                existing.sizeName = currentSizeLabel;
+                existing.realValue = analysis.realValue;
+                existing.price = Math.max(existing.price, Math.round(analysis.realValue * 0.8));
+            }
+        } else {
+            let initialSuggestedPrice = Math.max(150, Math.round(analysis.realValue * 0.8));
+            shedPaintings.push({ 
+                id: Date.now(), 
+                name: currentCanvasName, 
+                price: initialSuggestedPrice, 
+                realValue: analysis.realValue,
+                status: "En Galpón", 
+                width: canvas.width, 
+                height: canvas.height, 
+                dataUrl: dataUrl, 
+                sizeName: currentSizeLabel, 
+                author: "Ese" 
+            });
+        }
+        editingPaintingId = null;
+    }
+
+    function discardCanvasPermanently() { if(confirm("¿Eliminar cuadro?")) { editingPaintingId = null; switchScreen('shed-screen'); } }
+    function finishAndSendToShed() { autoSaveAndSendToShed(); switchScreen('shed-screen'); }
+
+    function receiveNewOffer() {
+        let exhibitedList = shedPaintings.filter(p => p.status === "En Exhibición");
+        if(!storeOpen || exhibitedList.length === 0) return;
+        
+        let randomExhibited = exhibitedList[Math.floor(Math.random() * exhibitedList.length)];
+        
+        let analysis = analyzeCanvasData(randomExhibited);
+        randomExhibited.realValue = analysis.realValue;
+
+        let randomClientName = clientFirstNames[Math.floor(Math.random() * clientFirstNames.length)];
+        let randomPersonality = clientPersonalities[Math.floor(Math.random() * clientPersonalities.length)];
+
+        let rawScore = randomPersonality.eval(analysis.r, analysis.g, analysis.b, analysis.brightness, analysis.complexity);
+        
+        // Si el análisis detectó que es un simple garabato sin sentido, forzamos malas calificaciones e indignación de los clientes
+        if (analysis.isScribble) {
+            rawScore = 1.0;
+        }
+
+        let finalScore = Math.min(10, Math.max(1, parseFloat(rawScore.toFixed(1))));
+
+        let askPrice = randomExhibited.price;
+        let priceRatio = askPrice / randomExhibited.realValue;
+
+        let reviewText = "";
+        let calculatedOfferPrice = 0;
+        let isRejectedByPrice = false;
+
+        if (analysis.isScribble) {
+            isRejectedByPrice = true;
+            reviewText = `¿Esto es una broma? ¡Es un simple garabato sin ningún sentido ni esfuerzo artístico! Esto insulta la galería. ¡Me voy indignado de aquí!`;
+            finalScore = 1.0;
+        } else if(priceRatio > 3.5) {
+            isRejectedByPrice = true;
+            reviewText = `¡Estás totalmente loco pidiendo 💵 ${askPrice.toLocaleString()} por esto! Como ${randomPersonality.name.toLowerCase()}, me parece una falta de respeto total al mercado del arte. ¡Me voy indignado!`;
+            finalScore = 1.0;
+        } else if(priceRatio > 1.5) {
+            reviewText = `Me gusta bastante tu obra, ${randomPersonality.descType} Sin embargo, pedir 💵 ${askPrice.toLocaleString()} se me hace algo excesivo. Te ofrezco un monto más acorde a lo que considero justo.`;
+            calculatedOfferPrice = Math.round(randomExhibited.realValue * (finalScore / 8));
+        } else if(priceRatio < 0.4) {
+            reviewText = `¡Una verdadera ganga! ${randomPersonality.descType} Al ver un precio tan bajo de 💵 ${askPrice.toLocaleString()}, ¡te lo quiero comprar ya mismo antes de que otro se avive!`;
+            calculatedOfferPrice = askPrice;
+        } else {
+            let multiplier = (finalScore / 7.5);
+            calculatedOfferPrice = Math.round(askPrice * multiplier);
+            reviewText = `¡Me fascina! Siento que ${randomPersonality.descType} El precio pedido de 💵 ${askPrice.toLocaleString()} me parece razonable para lo que transmite.`;
+        }
+
+        calculatedOfferPrice = Math.max(10, calculatedOfferPrice);
+
+        const newOffer = {
+            id: Date.now(),
+            obra: randomExhibited.name,
+            cliente: `${randomClientName} (${randomPersonality.name})`,
+            desc: reviewText,
+            precio: isRejectedByPrice ? 0 : calculatedOfferPrice,
+            score: finalScore,
+            isRejected: isRejectedByPrice,
+            time: 35,
+            paintingId: randomExhibited.id
+        };
+        
+        activeOffers.push(newOffer);
+        renderOffers();
+        logEvent(`💬 Cliente ${newOffer.cliente} evaluó "${randomExhibited.name}" (Precio pedido: 💵 ${askPrice.toLocaleString()}).`);
+    }
+
+    function renderOffers() {
+        const container = document.getElementById('offers-container');
+        if (!container) return;
+        if(activeOffers.length === 0) { container.innerHTML = "No hay ofertas activas."; return; }
+        container.innerHTML = "";
+        activeOffers.forEach((offer, idx) => {
+            let statusText = offer.isRejected ? `<span style="color: #e74c3c; font-weight:bold;">¡Rechazado / Insultado!</span>` : `Oferta: 💵 ${offer.precio.toLocaleString()} | ⭐ ${offer.score}`;
+            container.innerHTML += `
+                <div class="offer-card" onclick="openEvalModal(${idx})">
+                    <strong>${offer.cliente}</strong><br>
+                    <span style="color: #ffd700;">Obra: "${offer.obra}"</span><br>
+                    <span style="font-weight: bold;">${statusText}</span>
+                </div>
+            `;
+        });
+    }
+
+    function openEvalModal(index) {
+        currentEvalIndex = index;
+        let offer = activeOffers[index];
+        
+        document.getElementById('modal-title').innerText = `Evaluación: "${offer.obra}"`;
+        document.getElementById('modal-client-info').innerText = `Cliente: ${offer.cliente}`;
+        document.getElementById('modal-desc').innerText = `"${offer.desc}"`;
+        document.getElementById('modal-score').innerText = `⭐ Calificación del cliente: ${offer.score} / 10`;
+        document.getElementById('modal-timer').innerText = offer.time;
+        
+        const priceContainer = document.getElementById('modal-price');
+        const buttonsContainer = document.getElementById('modal-buttons-container');
+
+        if(offer.isRejected) {
+            priceContainer.innerHTML = `<span style="color: #e74c3c;">El cliente se fue indignado.</span>`;
+            buttonsContainer.innerHTML = `<button class="btn-nav" style="background: #555; width: 100%;" onclick="closeEvalModal(); dismissRejectedOffer(${index});">Aceptar reclamo y cerrar</button>`;
+        } else {
+            priceContainer.innerHTML = `Propuesta de pago: 💵 ${offer.precio.toLocaleString()}`;
+            buttonsContainer.innerHTML = `
+                <button class="btn-nav" style="background: #2e8b57;" onclick="acceptActiveOffer()">Aceptar Venta</button>
+                <button class="btn-nav" style="background: #d93838;" onclick="closeEvalModal()">Cerrar / Ver después</button>
+            `;
+        }
+
+        document.getElementById('eval-modal').style.display = 'flex';
+
+        if(evalTimerInterval) clearInterval(evalTimerInterval);
+        evalTimerInterval = setInterval(() => {
+            offer.time--;
+            document.getElementById('modal-timer').innerText = offer.time;
+            if(offer.time <= 0) {
+                clearInterval(evalTimerInterval);
+                closeEvalModal();
+                activeOffers.splice(currentEvalIndex, 1);
+                renderOffers();
+                reputation = Math.max(0, reputation - 3);
+                document.getElementById('reputation-val').innerText = reputation;
+                logEvent("⚠️ Una oferta expiró sin respuesta. Reputación -3%.");
+            }
+        }, 1000);
+    }
+
+    function dismissRejectedOffer(index) {
+        let offer = activeOffers[index];
+        activeOffers.splice(index, 1);
+        renderOffers();
+        reputation = Math.max(0, reputation - 5);
+        document.getElementById('reputation-val').innerText = reputation;
+        logEvent(`⚠️ Tu tienda sufrió una mala crítica. Reputación -5%.`);
+    }
+
+    function closeEvalModal() {
+        if(evalTimerInterval) clearInterval(evalTimerInterval);
+        document.getElementById('eval-modal').style.display = 'none';
+    }
+
+    // CORRECCIÓN: AL VENDER UN CUADRO SE CANCELAN/ELIMINAN LAS DEMÁS OFERTAS DE ESTE MISMO CUADRO
+    function acceptActiveOffer() {
+        let offer = activeOffers[currentEvalIndex];
+        gold += offer.precio;
+        let repGain = offer.score >= 8 ? 3 : (offer.score >= 5 ? 1 : 0);
+        reputation = Math.min(100, reputation + repGain);
+        
+        document.getElementById('gold-val').innerText = gold.toLocaleString();
+        document.getElementById('reputation-val').innerText = reputation;
+        
+        let soldPaintingId = offer.paintingId;
+
+        // Eliminar la pintura vendida del galpón
+        shedPaintings = shedPaintings.filter(p => p.id !== soldPaintingId);
+
+        // Cancelar y purgar todas las demás ofertas activas que estaban compitiendo por este mismo cuadro
+        let removedCount = 0;
+        activeOffers = activeOffers.filter(o => {
+            if (o.paintingId === soldPaintingId) {
+                removedCount++;
+                return false;
+            }
+            return true;
+        });
+
+        if (removedCount > 0) {
+            logEvent(`🚫 Se cancelaron ${removedCount} ofertas paralelas porque el cuadro ya fue vendido.`);
+        }
+
+        logEvent(`💰 ¡Venta exitosa a ${offer.cliente}! Recibiste 💵 ${offer.precio.toLocaleString()}.`);
+        alert("¡Negocio cerrado con éxito!");
+        
+        closeEvalModal();
+        renderOffers();
+        renderExhibitionSlots();
+    }
+
+    renderExhibitionSlots();
+</script>
+
+</body>
+</html>
